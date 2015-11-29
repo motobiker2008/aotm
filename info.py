@@ -11,6 +11,7 @@ def get_wav_info(file):
 
 
 if __name__ == '__main__':
+    pass
     #get_wav_info('a.wav')
     # pcm_data = audiotools.open("file.wav")
     # metadata = track.get_metadata()
