@@ -1,28 +1,28 @@
 # coding: utf-8
+import time
+from reader import read_wav
+
 __author__ = 'vladimir'
 
 import numpy as np
 from matplotlib import pyplot as plt
 
-def plot(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
-    plt.figure(figsize=(15, 7.5))
-    plt.colorbar()
+def plot(samples):
+    #plt.axis([0, 1000, 0, 1])
+    #plt.ion()
+    #fig=plt.figure() # make a figure
+    #plt.show()
+    xList=[]
+    yList=[]
+    try:
+        for i in range(1, len(samples)):
+            plt.scatter(i, samples[i][1])
+            plt.draw()
+            plt.pause(0.0001)
+    except Exception:
+        plt.close('all')
 
-    plt.xlabel("time (s)")
-    plt.ylabel("frequency (hz)")
-    plt.xlim([0, timebins-1])
-    plt.ylim([0, freqbins])
-
-    xlocs = np.float32(np.linspace(0, timebins-1, 5))
-    plt.xticks(xlocs, ["%.02f" % l for l in ((xlocs*len(samples)/timebins)+(0.5*binsize))/samplerate])
-    ylocs = np.int16(np.round(np.linspace(0, freqbins-1, 10)))
-    plt.yticks(ylocs, ["%.02f" % freq[i] for i in ylocs])
-
-    if plotpath:
-        plt.savefig(plotpath, bbox_inches="tight")
-    else:
-        plt.show()
-
-    plt.clf()
-
-plot("a.wav")
+if __name__ == '__main__':
+    samplerate, samples = read_wav("chaikovsky.wav")
+    print(samples[2000:44000])
+    #plot(samples)

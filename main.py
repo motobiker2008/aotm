@@ -1,11 +1,14 @@
 # coding: utf-8
 from kivy.core.audio import Sound
 from player import play
+from plotting import plot
+from reader import read_wav
 
 __author__ = 'vladimir'
 
-import tkinter as tk
-from tkinter import filedialog
+import Tkinter as tk
+from Tkinter import *
+from tkFileDialog import *
 
 class Application(tk.Frame):
     def __init__(self, master=None, width=100, height=100):
@@ -15,6 +18,8 @@ class Application(tk.Frame):
         self.pack()
 
     def createWidgets(self):
+
+        self.sound_process = None
         self.v = tk.StringVar()
         self.entry = tk.Entry(None, textvariable=self.v)
         self.entry.pack(side="left")
@@ -25,19 +30,17 @@ class Application(tk.Frame):
         self.open["command"] = self.askopenfile
         self.open.pack(side="right")
 
-        # self.QUIT = tk.Button(self, text="QUIT", fg="red", command=root.destroy)
-        # self.QUIT.pack()
     def on_closing(self):
-        print("Closing")
-        self.soun_process.kill()
+        self.sound_process.kill()
         root.destroy()
 
     def askopenfile(self):
-        fname = filedialog.askopenfilename()
+        fname = askopenfilename()
         self.v.set(fname)
-        print(fname)
+        samplerate, samples = read_wav(fname)
         sp = play(fname)
-        self.soun_process = sp
+        self.sound_process = sp
+        plot(samples)
 
 root = tk.Tk()
 app = Application(master=root)
