@@ -7,22 +7,32 @@ __author__ = 'vladimir'
 import numpy as np
 from matplotlib import pyplot as plt
 
-def plot(samples):
+def plot(samples, times):
+    plt.ylabel("Amplitude")
+    plt.xlabel("Time")
+    # set the title
+    plt.title("Sample Wav")
     #plt.axis([0, 1000, 0, 1])
     #plt.ion()
     #fig=plt.figure() # make a figure
     #plt.show()
-    xList=[]
-    yList=[]
+    # data = samples
+    # plt.fill_between(times, data, color='k')
+    # plt.show()
+    print(len(samples), len(times))
     try:
         for i in range(1, len(samples)):
-            plt.scatter(i, samples[i][1])
+            plt.scatter(times[i], samples[i], marker=',')
+            #plt.scatter(times[i], samples[i][1], markertype=',')
             plt.draw()
-            plt.pause(0.0001)
-    except Exception:
+            plt.pause(0.0000001)
+    except Exception as e:
+        print(e)
         plt.close('all')
 
 if __name__ == '__main__':
-    samplerate, samples = read_wav("chaikovsky.wav")
-    print(samples[2000:44000])
-    #plot(samples)
+    samplerate, samples = read_wav("a1.wav")
+    times = np.arange(len(samples))/float(samplerate)
+    print(len(samples))
+    print(samples[:])
+    plot(samples, times)

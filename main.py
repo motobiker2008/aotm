@@ -3,6 +3,7 @@ from kivy.core.audio import Sound
 from player import play
 from plotting import plot
 from reader import read_wav
+import numpy as np
 
 __author__ = 'vladimir'
 
@@ -40,7 +41,8 @@ class Application(tk.Frame):
         samplerate, samples = read_wav(fname)
         sp = play(fname)
         self.sound_process = sp
-        plot(samples)
+        times = np.arange(len(samples))/float(samplerate)
+        plot(samples, times)
 
 root = tk.Tk()
 app = Application(master=root)
