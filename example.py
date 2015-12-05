@@ -1,4 +1,7 @@
 # coding: utf-8
+from numpy.fft import fft
+from reader import read_wav
+
 __author__ = 'vladimir'
 
 
@@ -6,6 +9,14 @@ import numpy as np
 from matplotlib import pyplot as plt
 import scipy.io.wavfile as wav
 from numpy.lib import stride_tricks
+#
+# data = read_wav('a1.wav')
+# a = data.T[0] # this is a two channel soundtrack, I get the first track
+# b=[(ele/2**8.)*2-1 for ele in a] # this is 8-bit track, b is now normalized on [-1,1)
+# c = fft(b) # create a list of complex number
+# d = len(c)/2  # you only need half of the fft list
+# plt.plot(abs(c[:(d-1)]),'r')
+# plt.show()
 
 
 """ short time fourier transform of audio signal """
