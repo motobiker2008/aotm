@@ -1,7 +1,10 @@
 # coding: utf-8
 from kivy.core.audio import Sound
+from scipy.fftpack import fft
+from scipy.io import wavfile
+from WavHeader import get_wave_header
 from player import play
-from plotting import plot
+from plotting import plot, plot_on_fly
 from reader import read_wav
 import numpy as np
 
@@ -38,11 +41,23 @@ class Application(tk.Frame):
     def askopenfile(self):
         fname = askopenfilename()
         self.v.set(fname)
-        samplerate, samples = read_wav(fname)
+        self.process_it(fname)
+
+    def process_it(self, fname):
+        header = get_wave_header(fname)
+        bits_per_sample = header['BitsPerSample']
+        channels = header['NumChannels']
+        samplerate, samples = wavfile.read(fname) # load the data
+        if channels == 2:
+            samples = samples.T[0]
+        times = np.arange(len(samples))/float(samplerate)
+        s=[(ele/2**bits_per_sample)*2-1 for ele in samples] # now normalized on [-1,1)
         sp = play(fname)
         self.sound_process = sp
-        times = np.arange(len(samples))/float(samplerate)
-        plot(samples, times)
+        print(samples[:10])
+        #plot_on_fly(samples, times)
+        fourie_samples = fft(s) # calculate fourier transform (complex numbers list)
+        plot(fourie_samples[:len(fourie_samples)/2-1])
 
 root = tk.Tk()
 app = Application(master=root)

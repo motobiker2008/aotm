@@ -2,7 +2,7 @@
 __author__ = 'vladimir'
 
 
-def PrintWavHeader(strWAVFile):
+def get_wave_header(strWAVFile):
     """ Extracts data in the first 44 bytes in a WAV file and writes it
             out in a human-readable format
     """
@@ -24,8 +24,8 @@ def PrintWavHeader(strWAVFile):
     # Read in all data
     bufHeader = fileIn.read(38)
     # Verify that the correct identifiers are present
-    print(bufHeader[0:4])
-    print(bufHeader[12:16])
+    #print(bufHeader[0:4])
+    #print(bufHeader[12:16])
     if (bufHeader[0:4] != b"RIFF") or (bufHeader[12:16] != b"fmt "):
          logging.debug("Input file not a standard WAV file")
          return
@@ -64,9 +64,9 @@ def PrintWavHeader(strWAVFile):
         # endif
     # end while
     # Dump subchunk list
-    print("Subchunks Found: ")
-    for chunkName in chunksList:
-        print("%s, " % (chunkName),)
+    #print("Subchunks Found: ")
+    #for chunkName in chunksList:
+    #    print("%s, " % (chunkName),)
     # end for
     print("\n")
     # Dump data chunk information
@@ -81,6 +81,7 @@ def PrintWavHeader(strWAVFile):
     DumpHeaderOutput(stHeaderFields)
     # Close file
     fileIn.close()
+    return stHeaderFields
 
 if __name__ == "__main__":
-    PrintWavHeader('a1.wav') #sys.argv[1]
+    get_wave_header('chaikovsky.wav') #sys.argv[1]

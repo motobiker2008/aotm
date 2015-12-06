@@ -7,32 +7,32 @@ __author__ = 'vladimir'
 import numpy as np
 from matplotlib import pyplot as plt
 
-def plot(samples, times):
+
+def plot(samples):
     plt.ylabel("Amplitude")
     plt.xlabel("Time")
-    # set the title
     plt.title("Sample Wav")
-    #plt.axis([0, 1000, 0, 1])
-    #plt.ion()
-    #fig=plt.figure() # make a figure
-    #plt.show()
-    # data = samples
-    # plt.fill_between(times, data, color='k')
-    # plt.show()
-    print(len(samples), len(times))
+    plt.plot(abs(samples), 'r')
+    plt.show()
+
+
+def plot_on_fly(samples, times):
+    plt.ylabel("Amplitude")
+    plt.xlabel("Time")
+    plt.title("Sample Wav")
     try:
         for i in range(1, len(samples)):
-            plt.scatter(times[i], samples[i], marker=',')
-            #plt.scatter(times[i], samples[i][1], markertype=',')
+            plt.scatter(samples[i], times[i], marker='o')
             plt.draw()
-            plt.pause(0.0000001)
+            plt.pause(0.000001)
     except Exception as e:
         print(e)
         plt.close('all')
 
+
 if __name__ == '__main__':
-    samplerate, samples = read_wav("a1.wav")
+    samplerate, samples = read_wav("chaikovsky.wav")
     times = np.arange(len(samples))/float(samplerate)
-    print(len(samples))
+    print(len(samples), samplerate)
     print(samples[:])
     plot(samples, times)
