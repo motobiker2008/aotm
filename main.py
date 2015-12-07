@@ -1,10 +1,13 @@
 # coding: utf-8
 from kivy.core.audio import Sound
+from multiprocessing.pool import ThreadPool
 from scipy.fftpack import fft
 from scipy.io import wavfile
+import threading
+from time import sleep
 from WavHeader import get_wave_header
 from player import play
-from plotting import plot, plot_on_fly, plot_amplitude_online
+from plotting import plot, plot_on_fly, plot_amplitude_online, plot_spectrum
 from reader import read_wav
 import numpy as np
 
@@ -13,6 +16,20 @@ __author__ = 'vladimir'
 import Tkinter as tk
 from Tkinter import *
 from tkFileDialog import *
+
+def worker(bits_per_sample, samples):
+    s=[(ele/2**bits_per_sample)*2-1 for ele in samples]
+    return fft(s)
+
+def fft_thread(bits_per_sample, samples):
+    pool = ThreadPool(processes=1)
+    async_result = pool.run(worker, (bits_per_sample, samples))
+    return async_result
+
+def plot_wave_thread(fourie_samples):
+    pool = ThreadPool(processes=1)
+    async_result = pool.apply_async(plot_spectrum, (fourie_samples, ))
+    async_result.get()
 
 class Application(tk.Frame):
     def __init__(self, master=None, width=100, height=100):
@@ -53,16 +70,15 @@ class Application(tk.Frame):
         times = np.arange(len(samples))/float(samplerate)
         time = len(samples)/float(samplerate)
         step = int(len(times)/(time*4)) #0.985
+
+        #async_result = fft_thread(bits_per_sample, samples)
+
+        fourie_samples = worker(bits_per_sample, samples)
         sp = play(fname)
         self.sound_process = sp
-        plot_amplitude_online(samples, times, step)
-
-        #s=[(ele/2**bits_per_sample)*2-1 for ele in samples] # now normalized on [-1,1)
-
-        # print(samples[:10])
-        # print(s[:10])
-        #plot_on_fly(samples, times)
-        # fourie_samples = fft(s) # calculate fourier transform (complex numbers list)
+        plot_amplitude_online(samples, times, step) #async_result.get()
+        #plot_wave_thread(fourie_samples)
+        plot_spectrum(fourie_samples)
         # plot(fourie_samples[:len(fourie_samples)/2-1], samplerate)
 
 root = tk.Tk()

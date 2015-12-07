@@ -24,6 +24,10 @@ def plot_amplitude_online(data, times, step):
         plt.plot(x,y)
         plt.pause(0.000000001)
 
+def plot_spectrum(data):
+    plt.plot(abs(data), 'r')
+    plt.show()
+
 def plot(samples, samplerate):
     time= len(samples)/float(samplerate)
     plt.colorbar()
