@@ -4,7 +4,7 @@ from scipy.fftpack import fft
 from scipy.io import wavfile
 from WavHeader import get_wave_header
 from player import play
-from plotting import plot, plot_on_fly
+from plotting import plot, plot_on_fly, plot_amplitude_online
 from reader import read_wav
 import numpy as np
 
@@ -45,19 +45,25 @@ class Application(tk.Frame):
 
     def process_it(self, fname):
         header = get_wave_header(fname)
-        bits_per_sample = header['BitsPerSample']
+        bits_per_sample = float(header['BitsPerSample'])/1
         channels = header['NumChannels']
-        samplerate, samples = wavfile.read(fname) # load the data
+        samplerate, samples = wavfile.read(fname)
         if channels == 2:
             samples = samples.T[0]
         times = np.arange(len(samples))/float(samplerate)
-        s=[(ele/2**bits_per_sample)*2-1 for ele in samples] # now normalized on [-1,1)
+        time = len(samples)/float(samplerate)
+        step = int(len(times)/(time*4)) #0.985
         sp = play(fname)
         self.sound_process = sp
-        print(samples[:10])
+        plot_amplitude_online(samples, times, step)
+
+        #s=[(ele/2**bits_per_sample)*2-1 for ele in samples] # now normalized on [-1,1)
+
+        # print(samples[:10])
+        # print(s[:10])
         #plot_on_fly(samples, times)
-        fourie_samples = fft(s) # calculate fourier transform (complex numbers list)
-        plot(fourie_samples[:len(fourie_samples)/2-1])
+        # fourie_samples = fft(s) # calculate fourier transform (complex numbers list)
+        # plot(fourie_samples[:len(fourie_samples)/2-1], samplerate)
 
 root = tk.Tk()
 app = Application(master=root)
