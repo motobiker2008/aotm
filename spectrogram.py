@@ -41,7 +41,7 @@ def logscale_spec(spec, sr=44100, factor=20.):
     timebins, freqbins = np.shape(spec)
 
     scale = np.linspace(0, 1, freqbins) ** factor
-    scale *= (freqbins-1)/max(scale)
+    scale *= (freqbins-1)/max(scale)/4
     scale = np.unique(np.round(scale))
 
     # create spectrogram with new freq bins
