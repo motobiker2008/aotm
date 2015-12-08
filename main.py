@@ -1,13 +1,16 @@
 # coding: utf-8
 from kivy.core.audio import Sound
 from multiprocessing.pool import ThreadPool
+import ntpath
 from scipy.fftpack import fft
 from scipy.io import wavfile
 import threading
 from time import sleep
 from WavHeader import get_wave_header
+from converter import mp3_to_wav
+from spectrogram import plot
 from player import play
-from plotting import plot, plot_on_fly, plot_amplitude_online, plot_spectrum
+from plotting import plot_amplitude_online, plot_spectrum
 from reader import read_wav
 import numpy as np
 
@@ -30,6 +33,22 @@ def plot_wave_thread(fourie_samples):
     pool = ThreadPool(processes=1)
     async_result = pool.apply_async(plot_spectrum, (fourie_samples, ))
     async_result.get()
+
+def path_leaf(path):
+    head, tail = ntpath.split(path)
+    return tail or ntpath.basename(head)
+
+def to_wav(fname):
+    name = path_leaf(fname)
+    res_temp_name = None
+    if name.split('.')[1] == 'mp3':
+        res_temp_name = name.split('.')[0]+'.wav'
+        mp3_to_wav(fname, res_temp_name, 0, 7)
+    elif name.split('.')[1] == 'wav':
+        res_temp_name = name
+    else:
+        pass
+    return res_temp_name
 
 class Application(tk.Frame):
     def __init__(self, master=None, width=100, height=100):
@@ -61,6 +80,9 @@ class Application(tk.Frame):
         self.process_it(fname)
 
     def process_it(self, fname):
+        fname = to_wav(fname)
+        if not fname:
+            return
         header = get_wave_header(fname)
         bits_per_sample = float(header['BitsPerSample'])/1
         channels = header['NumChannels']
@@ -77,9 +99,10 @@ class Application(tk.Frame):
         sp = play(fname)
         self.sound_process = sp
         plot_amplitude_online(samples, times, step) #async_result.get()
-        #plot_wave_thread(fourie_samples)
+
         plot_spectrum(fourie_samples)
-        # plot(fourie_samples[:len(fourie_samples)/2-1], samplerate)
+        plot(fname)
+        #plot(samplerate, samples, fourie_samples)
 
 root = tk.Tk()
 app = Application(master=root)
