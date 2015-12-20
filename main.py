@@ -13,6 +13,7 @@ from player import play
 from plotting import plot_amplitude_online, plot_spectrum
 from reader import read_wav
 import numpy as np
+from function import *
 
 __author__ = 'vladimir'
 
@@ -91,18 +92,20 @@ class Application(tk.Frame):
             samples = samples.T[0]
         times = np.arange(len(samples))/float(samplerate)
         time = len(samples)/float(samplerate)
-        step = int(len(times)/(time*4)) #0.985
-
+        step = int(len(times)/(time*10))
         #async_result = fft_thread(bits_per_sample, samples)
 
         fourie_samples = worker(bits_per_sample, samples)
         sp = play(fname)
         self.sound_process = sp
-        plot_amplitude_online(samples, times, step) #async_result.get()
 
-        plot_spectrum(fourie_samples)
-        plot(fname)
-        #plot(samplerate, samples, fourie_samples)
+        #plot_amplitude_online(samples, times, step) #async_result.get()
+        #plot_spectrum(fourie_samples)
+        #plot(fname)
+
+        ampl_freq(samples, times)
+        spectrum(samples)
+        ampl(samples, times)
 
 root = tk.Tk()
 app = Application(master=root)
