@@ -20,13 +20,21 @@ spectrum(signal)
 
 
 def ampl_freq(signal, time):
-    normal_signal = [(ele / 2 ** 8.) * 2 - 1 for ele in signal]  # this is 8-bit track, b is now normalized on [-1,1)
+    normal_signal = [(ele / 2 ** 16.) * 2 - 1 for ele in signal]  # this is 8-bit track, b is now normalized on [-1,1)
     fft_result = rfft(normal_signal)  # calculate real part fourier transform (complex numbers list)
-
-    d = len(fft_result)/2
-    plt.plot(abs(fft_result[:(d - 1)]), 'r')
+    len(fft_result)
+    d = int(len(fft_result)/22050)
+    print(d)
+    nr = []
+    for i in range(0, len(fft_result)):
+        if i % d == 0:
+            nr.append(fft_result[i])
+    print("AAA")
+    print(nr)
+    plt.plot(nr, 'r')
+    plt.show()
     plt.savefig('apl_freq.png')
-    plt.clf()
+    #plt.clf()
 
 
 def spectrum(signal):

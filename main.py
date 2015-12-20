@@ -96,8 +96,8 @@ class Application(tk.Frame):
         #async_result = fft_thread(bits_per_sample, samples)
 
         fourie_samples = worker(bits_per_sample, samples)
-        sp = play(fname)
-        self.sound_process = sp
+        # sp = play(fname)
+        # self.sound_process = sp
 
         #plot_amplitude_online(samples, times, step) #async_result.get()
         #plot_spectrum(fourie_samples)
