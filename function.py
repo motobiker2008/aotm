@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from scipy.fftpack import rfft
+import numpy as np
 
 '''
 From main it called
@@ -24,24 +25,23 @@ def ampl_freq(signal, time):
     fft_result = rfft(normal_signal)  # calculate real part fourier transform (complex numbers list)
     len(fft_result)
     d = int(len(fft_result)/22050)
-    print(d)
     nr = []
     for i in range(0, len(fft_result)):
         if i % d == 0:
-            nr.append(fft_result[i])
-    print("AAA")
-    print(nr)
+            nr.append(abs(fft_result[i]))
+
     plt.plot(nr, 'r')
-    plt.show()
+    plt.ylim([0, 5000])
+    plt.xlim([0, 22050])
     plt.savefig('apl_freq.png')
-    #plt.clf()
+    plt.clf()
 
 
 def spectrum(signal):
     plt.specgram(
         signal,
-        Fs=44100,
-        noverlap=int(128 * 0.5))
+        Fs=44100)
+    plt.ylim([0, 22050])
     plt.savefig('spectrum.png')
     plt.clf()
 

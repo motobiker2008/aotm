@@ -72,7 +72,7 @@ class Application(tk.Frame):
         self.open.pack(side="right")
 
     def on_closing(self):
-        self.sound_process.kill()
+        #self.sound_process.kill()
         root.destroy()
 
     def askopenfile(self):
